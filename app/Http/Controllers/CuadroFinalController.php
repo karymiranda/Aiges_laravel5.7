@@ -31,12 +31,12 @@ class CuadroFinalController extends Controller
             $cuadroFinal = CuadroFinal::create([ "seccion_id" => $params['id'] ]);
             self::getArrayNotesInsert($cuadroFinal, $seccion);
             DB::commit();  
-            return redirect()->route('cuadroFinal.show', ['id' => $params['id']])
-                ->with('success', 'Hemos creado la información necesaria para el cuadro final');
+            return redirect()->route('cuadroFinal.show', $params['id'])
+                ->with('success', 'Cuadro final creado con éxito.');
         } catch (\Throwable $th) {
            // dd($th);
             DB::rollBack();
-            return redirect()->route('cuadroFinal.show', ['id' => $params['id']])
+            return redirect()->route('cuadroFinal.show', $params['id'])
                 ->with('error', 'Hemos tenido un problema con la base de datos, intenta más tarde por favor');
         }
     }
@@ -83,10 +83,11 @@ class CuadroFinalController extends Controller
         $cuadro = CuadroFinal::where('seccion_id', $id)->first();        
         if($cuadro) {
             $args['seccion'] = Seccion::find($id);
+           // dd($args['seccion']->anio);
             $args['estadistica'] = Estadistica::where('seccion_id', $id)->first();
             $args['items'] = CuadroFinalNota::where('cuadro_final_id', $cuadro->id)->get();
             $args['promedios'] = self::getPromedios($cuadro->id);
-            $sqlQuery = "SELECT conducta_alumno.* FROM conducta_alumno INNER JOIN tb_expedienteestudiante ON conducta_alumno.alumno_id = tb_expedienteestudiante.id INNER JOIN tb_periodoevaluaciones ON conducta_alumno.periodo_id = tb_periodoevaluaciones.id INNER JOIN tb_matriculaestudiante ON tb_matriculaestudiante.estudiante_id = tb_expedienteestudiante.id WHERE tb_matriculaestudiante.seccion_id = {$id} AND conducta_alumno.periodo_id = ( SELECT tbp.id FROM tb_periodoevaluaciones tbp WHERE tbp.nombre = 'P3' AND tbp.estado = 1 ) ORDER BY alumno_id";
+            $sqlQuery = "SELECT conducta_alumno.* FROM conducta_alumno INNER JOIN tb_expedienteestudiante ON conducta_alumno.alumno_id = tb_expedienteestudiante.id INNER JOIN tb_periodoevaluaciones ON conducta_alumno.periodo_id = tb_periodoevaluaciones.id INNER JOIN tb_matriculaestudiante ON tb_matriculaestudiante.estudiante_id = tb_expedienteestudiante.id WHERE tb_matriculaestudiante.seccion_id = {$id} AND conducta_alumno.periodo_id = (  SELECT tbp.id FROM tb_periodoevaluaciones tbp inner join tb_periodo_activo pa WHERE tbp.nombre = 'P3' and tbp.periodo_id=pa.id and pa.anio={$args['seccion']->anio} ) ORDER BY alumno_id";
             $pdf = new PdfController('L', 'cm', 'Legal');
             $args['conductas'] = DB::select( DB::raw($sqlQuery) );
             $pdf->cuadroFinal($args);
@@ -190,7 +191,7 @@ class CuadroFinalController extends Controller
             }
             CuadroFinalNota::where('id', $value->id)->update($arraySubjects);
         }
-        return redirect()->route('cuadroFinal.show', ['id' => $all['seccion']])
+        return redirect()->route('cuadroFinal.show', $all['seccion'])
                 ->with('success', 'Hemos actualizado con la notas de la sección para el cuadro final');
     }
 
@@ -201,11 +202,11 @@ class CuadroFinalController extends Controller
     }
 
     public function closeexpedient(Request $request)
-    { 
-        dd($request);
+    {  
+
         $all = $request->get('aprobado');
-       //print_r($all);
-       if(count($request->get('aprobado'))>0){
+       if(count($all)>0){
+
         foreach ($all as $value)  {
              $all = $request->get('aprobado');
             $item = CuadroFinalNota::where('alumno_id', $value)
@@ -216,29 +217,30 @@ class CuadroFinalController extends Controller
 
     }
 }
-
- if(count($request->get('reprobado'))>0){
-     $all = $request->get('reprobado');
-        foreach ($all as $value) {
-            
-            $item = CuadroFinalNota::where('alumno_id', $value)
+  $all = $request->get('reprobado');
+ if(!empty($all)){
+     $rep = $request->get('reprobado');
+        foreach ($rep as $value) {
+           $item = CuadroFinalNota::where('alumno_id', $value)
                 ->update([
                     "promovido" => 0,
                     "estado" => 0
                 ]);
-    }
+     
 }
-
-        return json_encode([ "response" => 'ok' ]);
+}
+return json_encode([ "response" => 'ok' ]);
+       
     }
 
 
   public function eliminarCuadro(Request $req,$seccion)
     {
+
 $cuadro=CuadroFinal::with('items')->where('seccion_id',$seccion)->first();
 $cuadro->items()->delete(); 
 $cuadro->delete();
- return redirect()->route('cuadroFinal.show',$seccion);
+ ///return redirect()->route('cuadroFinal.show',$req->seccion);
     }
 
     public function getEstadistica(Request $request)

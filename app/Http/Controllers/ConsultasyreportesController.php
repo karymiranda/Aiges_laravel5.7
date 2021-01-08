@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AsistenciaestudiantesExport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ConsultasyreportesController extends Controller
 {  
@@ -902,7 +903,7 @@ public function horariosdeclases_pdf($idseccion)
    // DB::commit();
 $anio = Seccion::find($idseccion);
 $anio=$anio->anio;
-    $horario = HorarioClases::where([['estado','=','1'],['anio','=',$anio],['tb_horario_clases.seccion_id','=',$idseccion]])
+    $horario = HorarioClases::where([['anio','=',$anio],['tb_horario_clases.seccion_id','=',$idseccion]])
       ->orderBy('id','ASC')->get();
       $horario->each(function($horario){ 
       $horario->horario_asignatura;
@@ -924,7 +925,7 @@ $fpdf->Cell(0, $this->height - 1, utf8_decode('AÑO ESCOLAR ').$anio, 0, 1, 'C')
 //////////////////////////////////////////////  
 
 //CONSULTA INFO  
- //if($horario->isNotEmpty()){
+
   if(count($horario)>0){
   /*  $seccion=Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'))
             ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
@@ -1034,9 +1035,8 @@ else{
   $fpdf->MultiCell(0, $this->height - 1, utf8_decode('No hay información para mostrar.'), 0, 'L', 0, 0, '', '', true);
 }
 
-
-//if(!$horario->isNotEmpty())
-  if(!count($horario)>0)
+$h=is_array($horario) ? count($horario) : 0;
+  if(!$h>0)
 {
 $seccion=Seccion::with('seccion_grado')->where('id','=',$idseccion)->first();
 if($seccion->seccion_empleado==null){
@@ -1605,10 +1605,11 @@ $this->piedepagina($fpdf);
     // \Codedge\Fpdf\Fpdf\Fpdf $pdf
   )
   {
+   // dd($requ);
 $id=$request->seccion_id;
 $seccion=Seccion::find($id);
 $anio=Periodoactivo::find($request->periodo_id);//uso el scope para sacar el periodo activo
-$anio=$anio->anio;
+$anio=$seccion->anio;
 /*$datos=Expedienteestudiante::with(['estudiante_familiares'=>function($q) use ($anio){
 $q->with('parentesco')->where('tb_familiares.encargado','like','SI')->get();}])->whereHas('estudiante_seccion', function ($q) use ($anio,$id){
   $q->where([['tb_matriculaestudiante.anio','=',$anio],['v_estadomatricula','like','aprobada'],['tb_matriculaestudiante.seccion_id','=',$id]]);
@@ -2341,7 +2342,8 @@ return response()->json($periodos);
 //MODULO DOCENTES 
 public function listareportesmodulodocentes()
 {
-$listasecciones=Seccion::secciones_docente()->pluck('grado','id');
+//$listasecciones=Seccion::secciones_docente()->pluck('grado','id');
+$listasecciones=$this->secciones_docente()->pluck('grado','id');
 $aniolectivo=Periodoactivo::periodoescolar()->get();
 $aniolectivoactivo=$aniolectivo->pluck('anio','id');
 
@@ -2350,6 +2352,15 @@ $asignaturas = Asignaturas::where('estado', 1)->get();
 return view('admin.personaldocente.reportesmodulodocentes.listareportesmodulodocentes')->with('periodos',$periodos)->with('listasecciones',$listasecciones)->with('aniolectivoactivo',$aniolectivoactivo)->with('asignaturas',$asignaturas);
 }
 //ASISTENCIA ESTUDIANTES REPORTE MODULO DOCENTE
+
+ protected function secciones_docente() //saca las secciones qu pertenecen al docente logeado
+    { 
+
+        $secciones = Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'), 'tb_secciones.id')
+            ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
+            ->where([['tb_secciones.empleado_id','=',Auth::user()->empleado->id],['tb_secciones.estado','=',1]])->get();
+        return $secciones; 
+    }
 
 public function getUltimoDiaMes($elAnio,$elMes) {
      return date("d",(mktime(0,0,0,$elMes+1,1,$elAnio)-1));

@@ -31,7 +31,7 @@ return view('admin.configuraciones.bonoescolar.periodocontable.listadeperiodosco
 $datos=Periodoactivo::orderBy('anio','DESC')->where([['tipo_periodo','like','CONTABLE'],['id',$request->id]])->first();
 $datos->estado=0;
 $datos->save();
-Flash::success($datos->nombre . "cerrado exitosamente")->important();
+Flash::success($datos->nombre . " cerrado exitosamente")->important();
     return redirect()->route('listaperiodocontable');
 
 

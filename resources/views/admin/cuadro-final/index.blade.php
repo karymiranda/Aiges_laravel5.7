@@ -56,7 +56,7 @@
     </div>
 
       <div class="modal-body">
-      <p style="color: black">Con el cierre de sección se deshabilitará el acceso a ingreso de matriculas,calificaciones,nóminas y asistencia. ¿Desea continuar?</p>                                                                    
+      <p style="color: black;font-size: 18px">Con el cierre de sección se deshabilitará el acceso a ingreso de matriculas,calificaciones,nóminas y asistencia. ¿Desea continuar?</p>                                                                    
     </div>
       <div class="box-footer" align="right">
 
@@ -148,6 +148,61 @@
 </div>
 
 
+<div class="modal fade" id="modal-errorcierreexpedientes">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form-horizontal" method="GET">
+                <div class="modal-header danger">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                  <h4 class="modal-title">CIERRE DE EXPEDIENTES</h4>
+                </div>
+  <div class="modal-body">           
+   
+    <p>Lo sentimos pero debe seleccionar al menos un alumno para realizar el cierre de expediente.</p>
+   
+  </div>
+
+  <div class="box-footer" align="right">
+       <button type="button" class="btn btn-sm btn-danger cancel-btn" data-dismiss="modal">Cerrar</button>
+  </div>
+          </form>
+        </div>                
+     </div>
+     </div> 
+
+<!-- /.modal-dialog -->
+
+
+<div class="modal fade" id="modal-expedientes">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form-horizontal" method="GET">
+                <div class="modal-header success">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                  <h4 class="modal-title">CIERRE DE EXPEDIENTES</h4>
+                </div>
+  <div class="modal-body">           
+   
+    <p>Cierre de expedientes estudiantiles realizado con éxito.</p>
+   
+  </div>
+
+  <div class="box-footer" align="right">
+       <button type="button" class="btn btn-sm btn-success cancel-btn" data-dismiss="modal">Cerrar</button>
+  </div>
+          </form>
+        </div>                
+     </div>
+     </div> 
+
+<!-- /.modal-dialog -->
+
+
+
+
+
 <div class="modal fade" id="modal-primary">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -179,10 +234,10 @@
 
 @section('script')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-  <script type="text/javascript">
-    $(document).on('ready', function() {
-     
-      var url = "http://localhost/aiges/public/cuadroFinal/";
+  <script type="text/javascript">  
+    
+    $(document).on('ready', function() {   
+      var url = "/aiges/public/cuadroFinal/";
       $.ajaxSetup({
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -194,8 +249,13 @@
       $("#recalcularcuadro").on('click', function(e) {
         //alert('recalcular')
 var url = "/aiges/public/cuadroFinal/";
-       $.post({
-          //url: url+'eliminarCuadro/'+<?=$id?>,
+  $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+       $.post({         
           url: url+'eliminarCuadro/'+<?=$id?>,
           data: { 'seccion': <?=$id?> }
         }).then(function(results) {
@@ -205,23 +265,38 @@ var url = "/aiges/public/cuadroFinal/";
 
       
       $("#expediente1").on('click', function(e) {
+
           var elements = $("#frm input:checked");
           var url = "/aiges/public/cuadroFinal/";
+           $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
         if(elements.length > 0) {
           $.post({
             url:url + "closeexpedient",
             data: elements
           }).then(function(results) {
+              $("#modal-expedientes").modal('show'); 
             window.location.reload();
           });
         } else {
-          alert('Lo sentimos pero debe seleccionar por lo menos un alumno para hacer el cierre')
+
+          $("#modal-errorcierreexpedientes").modal('show'); 
+          //alert('Lo sentimos pero debe seleccionar por lo menos un alumno para hacer el cierre')
         }
       });
 
       
       $("#generateEstadistica").on('click', function() {
-        //var url = "aiges/public/index.php/cuadroFinal/";
+        var url = "aiges/public/index.php/cuadroFinal/";
+         $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
         $.post({
           url:  'getEstadistica',
           data: { 'seccion': <?=$id?> }

@@ -183,7 +183,9 @@ public function horariodeclasesestudianteonline($id)
 {
 
 $periodoescolaractivo=Periodoactivo::orderBy('id','ASC')->where([['estado','=','1'],['tipo_periodo','like','ACADEMICO']])->first();
-if(!count($periodoescolaractivo)>0){
+$periodoEA=Periodoactivo::orderBy('id','ASC')->where([['estado','=','1'],['tipo_periodo','like','ACADEMICO']])->count();
+
+if(!$periodoEA>0){
 return redirect()->route('avisohorarioclases');
 }
 $anio=$periodoescolaractivo->anio;	

@@ -31,7 +31,6 @@ class GestiondenominasController extends Controller
 $anio=Periodoactivo::periodoescolar()->first();//uso el scope para sacar el periodo activo
 $anio=$anio->anio;
 $secciones = $this->secciones_docente();
-//dd($secciones);
 return view('admin.personaldocente.gestionacademica.nominas.missecciones')->with('secciones',$secciones);			
 }
 	public function nominadeestudiantes($id)
@@ -61,13 +60,33 @@ return view('admin.personaldocente.gestionacademica.nominas.vernominadeestudiant
 		return view('admin.personaldocente.gestionacademica.nominas.vernominadeencargados');	
 	}
 
+protected function secciones_docente_horario()
+        { 
+        $hoy = Carbon::now();
+	    $hoyg = $hoy->format('Y-m-d');
+	    $anio = $hoy->year;	
+ 
+            $secciones = Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'), 'tb_secciones.id')
+            ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
+            ->join('tb_horario_clases', 'tb_horario_clases.seccion_id', '=', 'tb_secciones.id')
+            ->groupBy('tb_secciones.id')
+            ->where('tb_horario_clases.estado','=',1)
+            ->where('tb_secciones.estado','=',1)
+            //->whereYear('tb_horario_clases.anio','=',$anio)
+            ->where('tb_horario_clases.docente_id','=',Auth::user()->empleado->id)->get();
+            return $secciones; 
+        }
+
+
+
+
  protected function secciones_docente() //saca las secciones qu pertenecen al docente logeado
-		{ 
+{ 
 		    $secciones = Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'), 'tb_secciones.id')
             ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
             ->where([['tb_secciones.empleado_id','=',Auth::user()->empleado->id],['tb_secciones.estado','=',1]])->get();
 		    return $secciones; 
-		}
+}
 
 	public function expedientecompleto_modulodocente($id,$seccion_id)
 		{

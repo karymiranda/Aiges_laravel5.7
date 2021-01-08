@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Expedienteestudiante;
 use App\Grados;
 use App\Familiares;
-use App\Periodoactivo;
+use App\Periodoactivo; 
 use App\Usuario;
 use App\BloqueHorarios;
 use App\Asignaturas;

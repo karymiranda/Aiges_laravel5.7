@@ -44,6 +44,7 @@ return view('admin.personaldocente.gestionacademica.controlcalificaciones.listaa
 */
     protected function secciones_docente() //saca las secciones qu pertenecen al docente logeado
 		{ 
+
 		    $secciones = Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'), 'tb_secciones.id')
             ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
             ->where([['tb_secciones.empleado_id','=',Auth::user()->empleado->id],['tb_secciones.estado','=',1]])->get();

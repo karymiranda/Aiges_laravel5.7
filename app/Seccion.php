@@ -111,14 +111,24 @@ public function scopeMatriculainicialmasculino($grado_id)
     }
 
 
-protected function secciones_docente() //saca las secciones qu pertenecen al docente logeado
+protected function secciones_docente_horario() //saca las secciones qu pertenecen al docente logeado y en las que imparte alguna materia
         { 
+        $hoy = Carbon::now();
+        $hoyg = $hoy->format('Y-m-d');
+        $anio = $hoy->year; 
+ 
             $secciones = Seccion::select(\DB::raw('CONCAT(tb_grados.grado, " ", tb_secciones.seccion) AS grado'), 'tb_secciones.id')
             ->join('tb_grados', 'tb_grados.id', '=', 'tb_secciones.grado_id')
-            //->where('tb_secciones.empleado_id','=',Auth::user()->empleado->id)->get();
-            ->where([['tb_secciones.empleado_id','=',Auth::user()->empleado->id],['tb_secciones.estado','=',1]])->get();
+            ->join('tb_horario_clases', 'tb_horario_clases.seccion_id', '=', 'tb_secciones.id')
+            ->groupBy('tb_secciones.id')
+            ->where('tb_horario_clases.estado','=',1)
+            ->where('tb_secciones.estado','=',1)
+            ->where('tb_horario_clases.docente_id','=',Auth::user()->empleado->id)->get();
             return $secciones; 
         }
+
+
+
 
  //PROBANDO ACCESSORS
  public function getSeccionFullAttribute()//cuando quiera utilizar esta funcion debo invocarla con elnombre ->seccion_full

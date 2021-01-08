@@ -30,18 +30,17 @@ class ControlAsistenciaController extends Controller
 
     public function index()//FUNCION DESDE ASISTENCIA DOCENTE
 	{
-		///d('bingo');
-
+	
 		$hoy = Carbon::now();
 		$hoyc = $hoy->format('Y-m-d');
 		$hoyf = $hoy->format('d/m/Y');
 		$hoyt = $hoyf . ' - ' . $hoyf;
 		$secciones = $this->secciones_docente();
 		//dd($secciones);
-		//dd($secciones);
-		$lista[]=null; 
+		$lista[]=null;  
 		$f=1;
 		$n=0;
+
 		return view('admin.personaldocente.gestionacademica.controlasistencia.listaasistencias')->with('hoy',$hoyt)->with('secciones',$secciones)->with('seccion','0')->with('estudiante',$lista)->with('n',$n)->with('f',$f);		
 	}
 
@@ -316,7 +315,9 @@ public function marcarasistencia()
 		$fecha = $hoy->format('d/m/Y');
 		$aniolectivo=Periodoactivo::periodoescolar()->get();
 		$aniolectivoactivo=$aniolectivo->pluck('anio','id');
+
 		$seccion = $this->secciones_docente();	
+	
 		return view('admin.personaldocente.gestionacademica.controlasistencia.registrarasistencia',compact('fecha','aniolectivoactivo','seccion'));
 		}
 

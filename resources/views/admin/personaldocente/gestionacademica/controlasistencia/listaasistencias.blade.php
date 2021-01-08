@@ -44,6 +44,10 @@
       </div>
       {!! Form::close() !!}
       <hr>
+
+      <?php
+      if($estudiante[0]!=null){ ?>
+
       <table class="table table-bordered table-striped" id="tablaAsistencia">
         <thead style="background-color: #3c8dbc;color:white;">
           <th>No.</th>
@@ -74,6 +78,8 @@
         <?php } ?>
         </tbody>
       </table>
+<?php } ?>
+
     </div>
     <!-- /.box-body-->   
   </div>

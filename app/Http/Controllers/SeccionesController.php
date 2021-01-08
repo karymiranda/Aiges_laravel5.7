@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SeccionRequest;
 use Illuminate\Http\Request;
 use App\Seccion;
-use App\Grados;
+use App\Grados; 
 use App\Turnos;
 use App\Empleado;
 use App\Expedienteestudiante;

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 
 class MotivopermisosrhController extends Controller
-{
+{ 
    
    	public function index()
 	{

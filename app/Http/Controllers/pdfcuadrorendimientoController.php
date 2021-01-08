@@ -18,13 +18,15 @@ class pdfcuadrorendimientoController extends Controller
 {
      public function rendimientoescolar($id, $asignatura_id) 
   {
+
     $centroEscolar = InfoCentroEducativo::first();
     $seccion = Seccion::find($id);
 
 $sqlQuerycargaacademica = "SELECT tb_empleado.v_nombres,tb_empleado.v_apellidos, tb_asignaturas.asignatura FROM tb_asignaturas inner join tb_horario_clases inner join tb_empleado  where tb_empleado.id=tb_horario_clases.docente_id AND tb_horario_clases.seccion_id = '".$id."'  AND tb_horario_clases.asignatura_id=tb_asignaturas.id  AND  tb_horario_clases.asignatura_id = '".$asignatura_id."' AND tb_horario_clases.anio ='".$seccion->anio." groupBy(tb_empleado.id)'";
 $docente_asignatura=DB::select( DB::raw($sqlQuerycargaacademica));
 $asig=collect($docente_asignatura)->first();//convierto a coleccion
-$encargadomateriaverify=count($asig);
+$encargadomateriaverify=collect($docente_asignatura)->count();
+//$encargadomateriaverify=$asig;
 if($encargadomateriaverify>0)
 {
 $evaluaciones = EvaluacionesPeriodo::orderby('codigo_eval', 'asc')->get();

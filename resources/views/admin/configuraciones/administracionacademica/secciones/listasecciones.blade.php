@@ -102,18 +102,18 @@
 
                      @if(strlen(strstr($listasecciones->seccion_grado->nivel_educativo,'Educación básica'))>0)
 
-                    <li> <a href="{{ route('cuadroFinal.show', ['id' => $listasecciones->id]) }}">Cuadro Final</a> </li>
+                    <li> <a href="{{ route('cuadroFinal.show',  $listasecciones->id) }}">Cuadro Final</a> </li>
                     <li class="divider"></li>
                     <!--li><a onclick="seleccionarperiodo({{$listasecciones->id}});" id="verBoleta_{{$listasecciones->id}}" href="#">Ver boleta de notas</a></li-->
                      <li><a href="{{route('reporteBoleta',$listasecciones->id)}}" target="__blank">Ver boleta de notas</a></li>
                      @endif
-                     <li><a id="matriculaxseccion" href="{{ route( 'docentesnominadeestudiantes_pdf', ['id' => $listasecciones->id]) }}" target="__blank">Ver alumnos matriculados</a></li>
-                  <li><a id="horariodeclase" href="{{ route( 'horariosdeclases_pdf', ['id' => $listasecciones->id]) }}"  target="__blank">Ver horario de clases</a>
+                     <li><a id="matriculaxseccion" href="{{ route( 'docentesnominadeestudiantes_pdf',  $listasecciones->id) }}" target="__blank">Ver alumnos matriculados</a></li>
+                  <li><a id="horariodeclase" href="{{ route( 'horariosdeclases_pdf', $listasecciones->id) }}"  target="__blank">Ver horario de clases</a>
                   </li>
 
                     @if(strlen(strstr($listasecciones->seccion_grado->nivel_educativo,'Educación parvularia'))>0)
                           <li class="divider"></li>
-                           <li><a href="{{ route( 'cerrarSeccionParvularia', ['id' => $listasecciones->id]) }}">Cerrar sección 
+                           <li><a href="{{ route( 'cerrarSeccionParvularia', $listasecciones->id) }}">Cerrar sección 
       <span class="pull-right-container">
       <small class="label pull-right bg-red">Parvularia</small>
       </span>

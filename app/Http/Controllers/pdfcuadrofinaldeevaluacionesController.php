@@ -13,6 +13,7 @@ class pdfcuadrofinaldeevaluacionesController extends Fpdf
   // Para la boleta de notas encabezado
   public function headerBoletaNotas($centro)
   {
+
      $routeImage = __DIR__."..\..\..\..\public\logoce.jpg";
     $routeImageMINED = __DIR__."..\..\..\..\public\EscudoDeElSalvador.jpg";
 

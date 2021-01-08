@@ -76,8 +76,8 @@
                     <span class="sr-only">Toggle Dropdown</span>
                   </button> 
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="{{route('periodorefuerzonotas', ['id' => $seccion_id,'modulo' => 'docente'])}}">Refuerzo academico</a></li>
-                    <li><a href="{{ route('cuadroFinal.show', ['id' => $seccion_id]) }}">Cuadro final</a></li>
+                    <li><a href="{{route('periodorefuerzonotas', [ $seccion_id,'docente'])}}">Refuerzo academico</a></li>
+                    <li><a href="{{ route('cuadroFinal.show', $seccion_id) }}">Cuadro final</a></li>
                      <li class="divider"></li>
                     <li><a href="{{route('reporteBoleta',$seccion_id)}}" target="__blank">Boleta de notas<span class="pull-right-container">
       <small class="label pull-right bg-yellow"> Pdf</small>

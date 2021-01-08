@@ -38,14 +38,13 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth'], function(){
 
 Route::get('/inicio', function () {
    //return view('admin.slide'); 
-$periodoescolaractivo = Periodoactivo::orderBy('id','ASC')->where([['estado','=','1'],['tipo_periodo','like','ACADEMICO']])->first();
-
+$periodoescolaractivo = Periodoactivo::orderBy('id','ASC')->where([['estado','=','1'],['tipo_periodo','like','ACADEMICO']])->get();
+//dd($periodoescolaractivo);
 if(!count($periodoescolaractivo)>0)
 {
 $periodoescolaractivo = Periodoactivo::where('tipo_periodo','like','ACADEMICO')->first();
 }
-//dd($periodoescolaractivo);
-$anio=$periodoescolaractivo->anio;
+$anio=$periodoescolaractivo[0]->anio;
 
 
 $countsecciones=Seccion::where('estado','=','1')->get()->count();

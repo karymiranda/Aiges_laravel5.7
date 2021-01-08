@@ -13,6 +13,7 @@ class rendimientoescolarporasignaturaController extends Fpdf
   // Para la boleta de notas encabezado
   public function headerBoletaNotas($centro)
   {
+
      $routeImage = __DIR__."..\..\..\..\public\logoce.jpg";
     $routeImageMINED = __DIR__."..\..\..\..\public\EscudoDeElSalvador.jpg";
 
@@ -63,7 +64,7 @@ class rendimientoescolarporasignaturaController extends Fpdf
     $this->Cell(190, $this->height,utf8_decode($datos->asignatura), 'B');
 
     $this->Cell(15, $this->height, utf8_decode('Año:'), 0, 0, 'R');
-    $this->Cell(0, $this->height,date('Y'), 'B', 1, 'C');
+    $this->Cell(0, $this->height,$seccion->anio, 'B', 1, 'C');
 
     $this->Cell(38, $this->height + 2, 'Profesor/a Encargado:  ', 0, 0, 'R');
     $this->Cell(190, $this->height + 2, utf8_decode($datos->v_nombres)."  ".utf8_decode($datos->v_apellidos), 'B', 0);

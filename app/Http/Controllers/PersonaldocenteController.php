@@ -237,10 +237,10 @@ $this->bitacora(array(
 
 public function missecciones_teacher()//INGRESO DE COMPETENCIAS CIUDADANAS
 	{
-		//$secciones=$this->secciones_docente_horario();
+		  //$secciones=$this->secciones_docente_horario();
           $secciones=$this->secciones_docente();
 		return view('admin.personaldocente.gestionacademica.controlcalificaciones.competenciasciudadanas.listaseccionespordocentev2',compact('secciones'));
-	}
+	} 
 
 
 	public function agregarCompetenciateacher(Request $request)
@@ -320,9 +320,8 @@ public function addSaveCompetenciateacher(Request $request)
 
 	public function misseccionesteacher()//INGRESO DE CALIFICACIONES
 	{
-		//dd('estado');
-		$secciones=$this->secciones_docente_horario();
-		//dd($secciones);
+		$secciones=$this->secciones_docente();
+
 		return view('admin.personaldocente.gestionacademica.controlcalificaciones.listaseccionespordocente',compact('secciones'));
 	}
 
@@ -390,7 +389,9 @@ $datos=Expedienteestudiante::orderBy('v_apellidos','ASC')->whereHas('estudiante_
 public function mihorariodeclases()
 {
 $aniolectivo=Periodoactivo::periodoescolar()->first();
-if(count($aniolectivo)>0)
+$aniol=Periodoactivo::periodoescolar()->count();
+
+if($aniol>0)
 {
 $anio=$aniolectivo->anio;
 $bloques=BloqueHorarios::get();

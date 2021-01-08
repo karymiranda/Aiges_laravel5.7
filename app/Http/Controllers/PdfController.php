@@ -53,7 +53,8 @@ class PdfController extends Fpdf
     $this->Cell(190, $this->height , utf8_decode($object['profesor']->v_apellidos).", ".utf8_decode($object['profesor']->v_nombres), 'B', 0);
 
     $this->Cell(22, $this->height , utf8_decode('Año:'), 0, 0, 'C');
-    $this->Cell(0, $this->height , date('Y'), 'B', 1, 'C');
+    //$this->Cell(0, $this->height , date('Y'), 'B', 1, 'C');
+     $this->Cell(0, $this->height , $object['seccion']['anio'], 'B', 1, 'C');
   }
 
 public function asistenciaTable($object = array())

@@ -74,7 +74,7 @@ Flash::error($titulo . "  No puede eliminarse ya que cuenta con transacciones re
 $datos=Fondodisponible::find($id);
 $datos->estatus='LIQUIDADO';
 $datos->save();
-Flash::success($datos->descripcion . "liquidado exitosamente")->important();
+Flash::success($datos->descripcion . " liquidado exitosamente")->important();
     return redirect()->route('listadepositodefondos');
 
     }
