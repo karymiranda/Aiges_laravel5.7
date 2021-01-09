@@ -253,3 +253,4 @@ Alaises que agregue para laravel collective
     ],
 
 ];
+?>
